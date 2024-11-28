@@ -1,0 +1,16 @@
+{% extends 'main.html' %}
+
+{% block title %}Профиль пользователя{% endblock %}
+
+{% block content %}
+    <h1>Профиль пользователя {{ user.username }}</h1>
+    
+    <p><strong>Биография:</strong> {{ user.profile.bio }}</p>
+    <p><strong>Дата рождения:</strong> {{ user.profile.birth_date }}</p>
+    <p><strong>Аватар:</strong> <img src="{{ user.profile.avatar.url }}" alt="{{ user.username }}'s avatar"></p>
+    
+    <!-- Добавляем ссылку на редактирование профиля -->
+    <div class="mt-3">
+        <a href="{% url 'accounts:edit_profile' %}" class="btn btn-primary">Редактировать профиль</a>
+    </div>
+{% endblock %}

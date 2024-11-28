@@ -1,0 +1,40 @@
+{% extends 'main.html' %}
+
+{% block title %}Редактировать профиль{% endblock %}
+
+{% block content %}
+    <h1 class="my-4">Редактировать профиль пользователя: {{ request.user.username }}</h1>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <h4>Обновить информацию о себе:</h4>
+        <div class="mb-3">
+            <label for="id_bio" class="form-label">Биография</label>
+            {{ form.bio }}
+        </div>
+
+        <div class="mb-3">
+            <label for="id_avatar" class="form-label">Аватар</label>
+            {{ form.avatar }}
+        </div>
+
+        <div class="mb-3">
+            <label for="id_birth_date" class="form-label">Дата рождения</label>
+            {{ form.birth_date }}
+        </div>
+
+        <h4>Обновить данные пользователя:</h4>
+        <div class="mb-3">
+            <label for="id_username" class="form-label">Имя пользователя</label>
+            {{ user_form.username }}
+        </div>
+
+        <div class="mb-3">
+            <label for="id_email" class="form-label">Email</label>
+            {{ user_form.email }}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+    </form>
+{% endblock %}
