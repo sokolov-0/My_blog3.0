@@ -4,6 +4,31 @@
 
 {% block content %}
     <h1 class="my-4">Все статьи</h1>
+    
+    <!-- Фильтры по категориям -->
+    <div class="categories">
+        <h4>Категории</h4>
+        <ul>
+            {% for category in categories %}
+                <li><a href="{% url 'post_list_category' category.slug %}">{{ category.name }}</a></li>
+            {% empty %}
+                <li>Нет категорий</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Фильтры по тегам -->
+    <div class="tags">
+        <h4>Теги</h4>
+        <ul>
+            {% for tag in tags %}
+                <li><a href="{% url 'post_list_tag' tag.slug %}">{{ tag.name }}</a></li>
+            {% empty %}
+                <li>Нет тегов</li>
+            {% endfor %}
+        </ul>
+    </div>
+
     <div class="row">
         {% for post in posts %}
             <div class="col-md-4 mb-4">

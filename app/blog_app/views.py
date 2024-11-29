@@ -1,6 +1,6 @@
 from django.shortcuts import render,get_object_or_404, redirect
 
-from .models import Post, Comment
+from .models import Post, Comment, Category, Tag
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 from .forms import PostCreateForm, PostUpdateForm, CommentForm
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -17,10 +17,25 @@ class PostListView(ListView):
 
     def get_queryset(self):
         queryset = Post.objects.filter(status='published')
+
+        category_slug = self.kwargs.get('category_slug')
+        if category_slug:
+            queryset = queryset.filter(category__slug=category_slug)
+
+        tag_slug = self.kwargs.get('tag_slug')
+        if tag_slug:
+            queryset = queryset.filter(tags__slug=tag_slug)
+
+        
+        
         return queryset
+    
+
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.all()
+        context['tags'] = Tag.objects.all()
         print(context['posts'])  # Вывод в консоль для проверки типа объекта
         return context
 

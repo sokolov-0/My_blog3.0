@@ -1,6 +1,31 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
+from django.conf import settings
+
+
+
+class Category(models.Model):
+    name = models.CharField(max_length=200, unique=True, verbose_name='Наименование категории')
+    slug = models.SlugField(unique=True, allow_unicode=True)
+    description = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+    
+    class Meta:
+        verbose_name='Категория'
+        verbose_name_plural = 'Категории'
+
+class Tag(models.Model):
+    name = models.CharField(max_length=100, unique=True, verbose_name='Наименование категории')
+
+    def __str__(self):
+        return self.name
+    
+    class Meta:
+        verbose_name = 'Тег'
+        verbose_name_plural = 'Теги'
 
 class PostManager(models.Manager):
     """
@@ -28,9 +53,12 @@ class Post(models.Model):
     created = models.DateTimeField(verbose_name='Дата и время создания поста', auto_now_add=True)
     updated = models.DateTimeField(verbose_name='Дата и время обновления поста', auto_now=True)
     status = models.CharField(choices=STATUS_OPTIONS, default='published', verbose_name='Статус записи', max_length=10)
-    author = models.ForeignKey(to = User, verbose_name='Автор записи', on_delete=models.SET_DEFAULT,default=1)
-    updater = models.ForeignKey(to = User, verbose_name='Обновил', on_delete=models.SET_NULL, null=True, blank=True, related_name='updater_posts')
     
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='author_posts')
+    updater = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='updater_posts')
+    
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='posts', blank=True, null=True)
+    tags = models.ManyToManyField(Tag, related_name='posts')
     class Meta:
         db_table = 'blog_post'
         ordering = ['-created']
@@ -62,7 +90,7 @@ class Post(models.Model):
 
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, verbose_name='Пост', related_name='comments')
-    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользоваель' )
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     content = models.TextField(verbose_name='Комментарий')
     created = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
 
@@ -73,3 +101,5 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'Комментарий от {self.user.username} к {self.post.title}'
+    
+
