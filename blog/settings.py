@@ -115,10 +115,10 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_URL = 'login'#регистрация 
+LOGIN_URL = 'accounts:oidc_login'#регистрация 
 # Основные настройки OIDC
 OIDC_RP_CLIENT_ID = "django-app"  # ID клиента, созданного в Keycloak
-OIDC_RP_CLIENT_SECRET = "http://localhost:8080"  # Секрет клиента из Keycloak
+OIDC_RP_CLIENT_SECRET = 'txFEbWAn7OKM2Wf1oi6c6t43cNBkaqoQ' # Секрет клиента из Keycloak 
 OIDC_OP_AUTHORIZATION_ENDPOINT = "http://localhost:8080/realms/blog/protocol/openid-connect/auth"
 OIDC_OP_TOKEN_ENDPOINT = "http://localhost:8080/realms/blog/protocol/openid-connect/token"
 OIDC_OP_USER_ENDPOINT = "http://localhost:8080/realms/blog/protocol/openid-connect/userinfo"
@@ -126,9 +126,20 @@ OIDC_OP_JWKS_ENDPOINT = "http://localhost:8080/realms/blog/protocol/openid-conne
 
 OIDC_RP_SIGN_ALGO = "RS256"  # Алгоритм подписи
 
+OIDC_AUTHENTICATION_CALLBACK_URL = "http://localhost:8000/accounts/oidc/callback/"
+ # Путь на который будет отправлен пользователь после успешной аутентификации
+
+
+
+OIDC_RENEW_ID_TOKEN_EXPIRY_SECONDS = 600 #обновление токена
 # URL-адреса для перенаправления после входа и выхода
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = 'http://localhost:8080/realms/blog/protocol/openid-connect/logout?redirect_uri=http://localhost:8000'
+LOGIN_REDIRECT_URL = 'http://localhost:8000/'
+LOGOUT_REDIRECT_URL = 'http://localhost:8000/'
+
+OIDC_CREATE_USER = True
+OIDC_USERNAME_FIELD = 'preferred_username'
+
+OIDC_RP_SCOPES = 'openid email profile'
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
 

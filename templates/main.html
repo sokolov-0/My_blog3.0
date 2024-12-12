@@ -27,38 +27,37 @@
                         </li>
 
                         {% if user.is_authenticated %}
-    <!-- Для авторизованных пользователей -->
-    {% if user.profile.slug %}
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'accounts:profile_detail' slug=user.profile.slug %}">Мой профиль</a>
-        </li>
-        <!-- Ссылка на редактирование профиля -->
-        {% if user.is_authenticated %}
-    <li class="nav-item">
-        <a class="nav-link" href="{% url 'accounts:edit_profile' %}">Редактировать профиль</a>
-    </li>
-{% endif %}
-    {% else %}
-        <li class="nav-item">
-            <span class="nav-link">Профиль не заполнен</span>
-        </li>
-    {% endif %}
-    <li class="nav-item">
-        <!-- Форма для выхода (POST-запрос) -->
-        <form method="post" action="{% url 'accounts:user_logout' %}" style="display:inline;">
-            {% csrf_token %}
-            <button type="submit" class="nav-link btn btn-danger text-white" style="margin-left: 10px;">Выход</button>
-        </form>
-    </li>
-{% else %}
-    <!-- Для гостей -->
-    <li class="nav-item">
-        <a class="nav-link" href="{% url 'accounts:user_login' %}">Вход</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="{% url 'accounts:user_register' %}">Регистрация</a>
-    </li>
-{% endif %}
+                            <!-- Для авторизованных пользователей -->
+                            {% if user.profile.slug %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'accounts:profile_detail' slug=user.profile.slug %}">Мой профиль</a>
+                                </li>
+                                <!-- Ссылка на редактирование профиля -->
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'accounts:edit_profile' %}">Редактировать профиль</a>
+                                </li>
+                            {% else %}
+                                <li class="nav-item">
+                                    <span class="nav-link">Профиль не заполнен</span>
+                                </li>
+                            {% endif %}
+                            
+                            <!-- Форма для выхода (POST-запрос) через Keycloak -->
+                            <li class="nav-item">
+                                <form method="post" action="{% url 'accounts:oidc_logout' %}" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="nav-link btn btn-danger text-white" style="margin-left: 10px;">Выход</button>
+                                </form>
+                            </li>
+                        {% else %}
+                            <!-- Для гостей -->
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'accounts:oidc_login' %}">Вход</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'accounts:user_register' %}">Регистрация</a>
+                            </li>
+                        {% endif %}
 
                     </ul>
                 </div>

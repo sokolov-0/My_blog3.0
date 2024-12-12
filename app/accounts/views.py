@@ -38,6 +38,7 @@ class UserRegisterView(CreateView, SuccessMessageMixin):
         context['title'] = 'Регистрация на сайте '
         return context
 
+
 class UserLoginView(LoginView, SuccessMessageMixin):
     '''
     Класс авторизации на сайте
