@@ -1,12 +1,12 @@
 {% extends 'main.html' %}
 
-{% block title %}Вход{% endblock %}
+{% block title %}Регистрация{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
     <h1>Вход</h1>
-    <p>Для входа на сайт перейдите на страницу авторизации Keycloak.</p>
-    <a href="{% url 'accounts:oidc_login' %}" class="btn btn-primary">Войти через Keycloak</a>
-    <p class="mt-3">Нет аккаунта? <a href="http://localhost:8080/realms/blog/account/">Зарегистрироваться</a></p>
+    <p>Вход через Keycloak.</p>
+    
+    <a href="/keycloak/login">Войти</a>
 </div>
 {% endblock %}

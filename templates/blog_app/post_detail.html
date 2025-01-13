@@ -9,11 +9,11 @@
     <p>{{ post.content }}</p>
 
     <div class="d-flex justify-content-start">
-        <a href="{% url 'post_list' %}" class="btn btn-secondary me-2">Назад к списку</a>
+        <a href="{% url 'blog_app:post_list' %}" class="btn btn-secondary me-2">Назад к списку</a>
         
         {% if post.author == user %}
-            <a href="{% url 'post_update' post.slug %}" class="btn btn-primary me-2">Редактировать</a>
-            <a href="{% url 'post_delete' post.slug %}" class="btn btn-danger" 
+            <a href="{% url 'blog_app:post_update' post.slug %}" class="btn btn-primary me-2">Редактировать</a>
+            <a href="{% url 'blog_app:post_delete' post.slug %}" class="btn btn-danger" 
                onclick="return confirm('Вы уверены, что хотите удалить этот пост?');">Удалить</a>
         {% endif %}
     </div>

@@ -2,7 +2,9 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
 from django.conf import settings
+from django.contrib.auth import get_user_model
 
+User = get_user_model()
 
 
 class Category(models.Model):
@@ -35,7 +37,7 @@ class PostManager(models.Manager):
         """
         Список постов(sql запросы с фильтрацией по стататусу опубликованные )
         """
-        return super().get_queryset().select_related('author').filter(status='published')#добавть после автора категорию если добавлю вооюще категории
+        return super().get_queryset().select_related('author').filter(status='published')#добавть после автора категорию если добавлю вооюще категории .select_related('author')
 
 
 
@@ -54,8 +56,8 @@ class Post(models.Model):
     updated = models.DateTimeField(verbose_name='Дата и время обновления поста', auto_now=True)
     status = models.CharField(choices=STATUS_OPTIONS, default='published', verbose_name='Статус записи', max_length=10)
     
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='author_posts')
-    updater = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='updater_posts')
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='author_posts')
+    updater = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='updater_posts')
     
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='posts', blank=True, null=True)
     tags = models.ManyToManyField(Tag, related_name='posts')
@@ -90,7 +92,7 @@ class Post(models.Model):
 
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, verbose_name='Пост', related_name='comments')
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField(verbose_name='Комментарий')
     created = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
 

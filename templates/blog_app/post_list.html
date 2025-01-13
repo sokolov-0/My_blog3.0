@@ -38,7 +38,7 @@
                         <h5 class="card-title">{{ post.title }}</h5>
                         <p class="card-text">{{ post.content|truncatewords:20 }}</p>
                         {% if post.slug %}
-                            <a href="{% url 'post_detail' post.slug %}" class="btn btn-primary">Читать далее</a>
+                            <a href="{% url 'blog_app:post_detail' post.slug %}" class="btn btn-primary">Читать далее</a>
                         {% else %}
                             <span class="btn btn-secondary disabled">Ссылка недоступна</span>
                         {% endif %}

@@ -3,7 +3,7 @@ from .models import Post, Comment, Tag, Category
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ('title', 'author', 'status','slug', 'created', 'updated')
+    list_display = ('title', 'author' ,'status','slug', 'created', 'updated')#убрал author тут и ниже на строку
     list_filter = ('status', 'author')
     search_fields = ('title', 'content')
     prepopulated_fields = {'slug': ('title',)}

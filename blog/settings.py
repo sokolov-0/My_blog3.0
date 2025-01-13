@@ -13,9 +13,9 @@ SECRET_KEY = 'django-insecure-($c*!4%gr@1ba_@cky@s$b@48&y7(_jtv%9u_95*mbn@+ofmsk
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
-
+CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://localhost:8080']
 # Application definition
 
 INSTALLED_APPS = [
@@ -27,8 +27,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'app.blog_app',
     'app.accounts',
-    #'django.core.paginator',
-    'mozilla_django_oidc',
+    'django_keycloak',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -39,7 +39,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'mozilla_django_oidc.middleware.SessionRefresh',
+    'django_keycloak.middleware.BaseKeycloakMiddleware',  # Middleware для Keycloak
+    'django_keycloak.middleware.RemoteUserAuthenticationMiddleware',  # Middleware для авторизации
 ]
 
 ROOT_URLCONF = 'blog.urls'
@@ -61,6 +62,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'blog.wsgi.application'
+
 
 
 # Database
@@ -115,38 +117,45 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_URL = 'accounts:oidc_login'#регистрация 
-# Основные настройки OIDC
-OIDC_RP_CLIENT_ID = "django-app"  # ID клиента, созданного в Keycloak
-OIDC_RP_CLIENT_SECRET = 'txFEbWAn7OKM2Wf1oi6c6t43cNBkaqoQ' # Секрет клиента из Keycloak 
-OIDC_OP_AUTHORIZATION_ENDPOINT = "http://localhost:8080/realms/blog/protocol/openid-connect/auth"
-OIDC_OP_TOKEN_ENDPOINT = "http://localhost:8080/realms/blog/protocol/openid-connect/token"
-OIDC_OP_USER_ENDPOINT = "http://localhost:8080/realms/blog/protocol/openid-connect/userinfo"
-OIDC_OP_JWKS_ENDPOINT = "http://localhost:8080/realms/blog/protocol/openid-connect/certs"
+# Основные параметры Keycloak
+KEYCLOAK_OIDC_PROFILE_MODEL = 'django_keycloak.OpenIdConnectProfile'
+KEYCLOAK_SERVER_URL = 'http://localhost:8080'
 
-OIDC_RP_SIGN_ALGO = "RS256"  # Алгоритм подписи
+KEYCLOAK_REALM = 'blog'
+KEYCLOAK_CLIENT_ID = 'django-app'
+KEYCLOAK_CLIENT_SECRET_KEY = 'txFEbWAn7OKM2Wf1oi6c6t43cNBkaqoQ'
 
-OIDC_AUTHENTICATION_CALLBACK_URL = "http://localhost:8000/accounts/oidc/callback/"
- # Путь на который будет отправлен пользователь после успешной аутентификации
+KEYCLOAK_AUTHORIZATION_URL = 'http://localhost:8080/realms/blog/protocol/openid-connect/auth'
+KEYCLOAK_TOKEN_URL = 'http://localhost:8080/realms/blog/protocol/openid-connect/token'
+KEYCLOAK_USERINFO_URL = 'http://localhost:8080/realms/blog/protocol/openid-connect/userinfo'
+KEYCLOAK_END_SESSION_URL ='http://localhost:8080/realms/blog/protocol/openid-connect/logout'
+KEYCLOAK_AUTHORIZATION_CONFIG = {
+    "SSL_REQUIRED": False,
+    "VERIFY_SSL": False,
+}
+
+# AUTHENTICATION_BACKENDS = [
+#     'django_keycloak.auth.backends.KeycloakAuthorizationBackend',  # Основной бэкенд для аутентификации
+#     'django.contrib.auth.backends.ModelBackend',  # Стандартный бэкенд Django (если нужно)
+# ]
 
 
-
-OIDC_RENEW_ID_TOKEN_EXPIRY_SECONDS = 600 #обновление токена
-# URL-адреса для перенаправления после входа и выхода
+# URL-адреса для входа и выхода
+LOGIN_URL = '/keycloak/login/'
 LOGIN_REDIRECT_URL = 'http://localhost:8000/'
 LOGOUT_REDIRECT_URL = 'http://localhost:8000/'
 
-OIDC_CREATE_USER = True
-OIDC_USERNAME_FIELD = 'preferred_username'
-
-OIDC_RP_SCOPES = 'openid email profile'
-
-AUTH_USER_MODEL = 'accounts.CustomUser'
 
 
 
+#AUTH_USER_MODEL = 'django_keycloak.KeycloakUser'
+AUTH_USER_MODEL = 'auth.User'
 
+
+
+STATIC_URL = 'static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
 
 
